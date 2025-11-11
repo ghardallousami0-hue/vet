@@ -147,26 +147,29 @@ class PawPlanApp {
     }
 
     createVetPlan() {
-        const name = document.getElementById('plan-name')?.value;
-        const price = parseInt(document.getElementById('plan-price')?.value);
+        const nameInput = document.getElementById('plan-name');
+        const priceInput = document.getElementById('plan-price');
+
+        const name = DOMPurify.sanitize(nameInput?.value || '');
+        const price = parseInt(priceInput?.value);
         const selectedServices = Array.from(document.querySelectorAll('input[name="services"]:checked'))
             .map(cb => cb.value);
-        
+
         if (!name || !price || selectedServices.length === 0) {
             this.showNotification('Please fill in all fields', 'error');
             return;
         }
-        
+
         const newPlan = {
             id: 'plan_' + Date.now(),
-            name,
-            price,
+            name: name,
+            price: price,
             services: selectedServices,
             description: 'Custom veterinary care plan',
             clientCount: 0,
             revenue: 0
         };
-        
+
         this.vetPlans.push(newPlan);
         this.saveDemoData();
         this.renderVetPlans();
